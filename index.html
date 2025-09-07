@@ -14,7 +14,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>星辰小說閱讀平臺</title>
+    <title>txtbook2025.github.io</title>
     <style>
 
         :root {--藍色: #00346c;--紅色: #b21f1f;--標1題藍: #00346c;--標2題紅: #b21f1f;}
@@ -239,6 +239,16 @@
     <!-- Firebase Authentication -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js">//Firestore庫的引用</script>
+
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.staticfile.net/translate.js/3.1.7/translate.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://64071181.github.io/mokJsapi/a.js">//琪琪修改</script>
+
 </head>
 
 
@@ -306,6 +316,7 @@
 #########       ########       #########       ###
 -->
 <body>
+    <p id="translate"></p>
     <div class="container">
         <header>
             <h1>星辰小說閱讀平臺</h1>
@@ -466,7 +477,11 @@
 </div>
 
     <footer>
-        <p>© 2024 星辰小說閱讀平臺 - 所有權利保留</p>
+        <div id="ContactAKI" class="ContactAKI"><!-- JS _顯示聯莫 --></div>
+        <div class="copyright">
+            <p class="mokJsApi_copyright">版權</p>
+        </div>
+        <div class="scroll-top" id="scrollTop" style="background: var(--gold);bottom: 40%;" onclick="scrollToTop()">↑</div>
     </footer>
 </body>
 
@@ -521,64 +536,28 @@
 
 
     <script type="module">
-        // 範例小說數據
-        const novels = [
-            {id: 1,
-                title: "第一章：星辰的呼喚",
-                author: "幻夢",
-                publishDate: "2024-05-20",
-                type: "free",
-                content: "在遙遠的星系邊緣，一顆被遺忘的星球上，古老的預言悄然甦醒。少年艾倫並不知道，他平凡的生活即將因為一塊神秘的發光石頭而徹底改變。那石頭不僅蘊含著宇宙的秘密，更指引著他走向一條充滿挑戰與奇遇的道路..."
-            },
-            {id: 2,
-                title: "第二章：迷霧森林的試煉",
-                author: "幻夢",
-                publishDate: "2024-05-27",
-                type: "free",
-                content: "為了尋找石頭的真相，艾倫踏入了傳說中的迷霧森林。這裡的每一棵樹木都擁有自己的意識，每一陣風都可能帶來致命的幻覺。他必須學會傾聽自然，分辨真實與虛假，才能找到森林深處的守護者。"
-            },
-            {id: 3,
-                title: "第三章：天空之城的秘密",
-                author: "幻夢",
-                publishDate: "2024-06-03",
-                type: "paid",
-                content: "此為付費內容。"
-            },
-            {id: 4,
-                title: "序章：紅月之夜",
-                author: "夜行者",
-                publishDate: "2024-04-15",
-                type: "free",
-                content: "當血紅色的月亮高掛夜空，古老的契約再次生效。城市陰影中的吸血鬼與狼人之間的休戰協議即將到期，一場無可避免的暗夜之戰，正隨著一名無意間闖入他們世界的普通偵探而拉開序幕。"
-            },
-            {id: 5,
-                title: "第四章：時間的裂縫",
-                author: "幻夢",
-                publishDate: "2024-06-10",
-                type: "paid",
-                content: "此為付費內容。"
-            },
-            {id: 6,
-                title: "第一章：代碼的低語",
-                author: "奇點",
-                publishDate: "2024-06-08",
-                type: "free",
-                content: "2077年，新京市。一個叛逆的駭客在入侵巨型企業『核心』的數據庫時，意外發現了一段無法解釋的代碼。這段代碼彷彿擁有生命，它開始與駭客對話，揭露了一個足以顛覆整個世界的驚天陰謀。"
-            }
-        ];
 
 
+/*
+          :::        :::    :::       :::::::::::
+       :+: :+:      :+:   :+:            :+:
+     +:+   +:+     +:+  +:+             +:+
+   +#++:++#++:    +#++:++              +#+
+  +#+     +#+    +#+  +#+             +#+
+ #+#     #+#    #+#   #+#            #+#
+###     ###    ###    ###       ###########
+*/
 
 
-
-
-
-
-
-
-
-
-
+        translate.service.use('client.edge'); //設置機器翻譯服務通道，直接客戶端本身，不依賴服務端 。相關說明參考 http://translate.zvo.cn/43086.html
+        translate.execute();//進行翻譯 
+        function Start() {
+            // 顯示聯莫
+            const 聯莫 = ['moksurky@gmail.com','https://wa.me/85264071181/','https://i.meee.com.tw/atcX6QM.png','https://www.instagram.com/writer_rain_god?igsh=MzNjbzBnOWQ1bDl3/','https://line.me/ti/p/UlSPd7p9zh/','https://www.facebook.com/profile.php?id=61579586521973','http://t.me/mokaki/'
+            ];
+            _顯示聯莫(聯莫);
+        }
+        琪琪修改('https://64071181.github.io/')
 
 
 
@@ -1105,6 +1084,9 @@ document.getElementById('save-settings-btn').addEventListener('click', async () 
         document.querySelector('header h1').textContent = siteTitle;
         document.querySelector('header p').textContent = siteSubtitle;
         
+        // 更新网页标题
+        document.title = siteTitle;
+        
         alert('設定保存成功！');
         document.getElementById('site-settings-modal').style.display = 'none';
         
@@ -1116,6 +1098,7 @@ document.getElementById('save-settings-btn').addEventListener('click', async () 
 
 
 
+
 // 加载网站设置
 async function loadSiteSettings() {
     try {
@@ -1124,6 +1107,7 @@ async function loadSiteSettings() {
             const settings = settingsDoc.data();
             if (settings.title) {
                 document.querySelector('header h1').textContent = settings.title;
+                document.title = settings.title; // 更新网页标题
             }
             if (settings.subtitle) {
                 document.querySelector('header p').textContent = settings.subtitle;
@@ -1149,6 +1133,7 @@ function setupSiteSettingsListener() {
                 const settings = doc.data();
                 if (settings.title) {
                     document.querySelector('header h1').textContent = settings.title;
+                    document.title = settings.title; // 更新网页标题
                 }
                 if (settings.subtitle) {
                     document.querySelector('header p').textContent = settings.subtitle;

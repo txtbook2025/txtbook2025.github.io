@@ -1098,6 +1098,7 @@ document.getElementById('save-settings-btn').addEventListener('click', async () 
             
             // 更新当前页面显示的用户名
             userName.textContent = userDisplayName;
+            userAvatar.textContent = userDisplayName.charAt(0).toUpperCase();
         }
         
         // 更新页面标题和副标题
@@ -1112,6 +1113,8 @@ document.getElementById('save-settings-btn').addEventListener('click', async () 
         alert("保存設定失敗，請重試");
     }
 });
+
+
 
 // 加载网站设置
 async function loadSiteSettings() {
@@ -1138,6 +1141,86 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// 实时监听网站设置变化
+function setupSiteSettingsListener() {
+    db.collection("settings").doc("site")
+        .onSnapshot((doc) => {
+            if (doc.exists) {
+                const settings = doc.data();
+                if (settings.title) {
+                    document.querySelector('header h1').textContent = settings.title;
+                }
+                if (settings.subtitle) {
+                    document.querySelector('header p').textContent = settings.subtitle;
+                }
+            }
+        }, (error) => {
+            console.error("监听网站设置失败: ", error);
+        });
+}
+
+// 在页面加载时设置监听
+document.addEventListener('DOMContentLoaded', () => {
+    renderNovelsFromFirestore();
+    loadSiteSettings();
+    setupSiteSettingsListener(); // 设置实时监听
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
       ::::::::::      :::    :::       ::::    :::
      :+:             :+:    :+:       :+:+:   :+:
@@ -1149,7 +1232,7 @@ document.addEventListener('DOMContentLoaded', () => {
 */
 
 
-// 修改认证状态变化监听器中的管理员检查部分
+// 修改认证状态变化监听器
 auth.onAuthStateChanged(async (user) => {
     if (user) {
         // 用戶已登入
@@ -1193,13 +1276,20 @@ auth.onAuthStateChanged(async (user) => {
             console.error("检查管理员状态时出错: ", error);
             document.getElementById('admin-panel').style.display = 'none';
         }
+        
+        // 加载网站设置
+        loadSiteSettings();
     } else {
         // 用戶已登出
         authButton.style.display = 'block';
         userInfo.style.display = 'none';
         document.getElementById('admin-panel').style.display = 'none';
+        
+        // 加载网站设置
+        loadSiteSettings();
     }
 });
+
 
         // 事件監聽
 document.addEventListener('DOMContentLoaded', () => {

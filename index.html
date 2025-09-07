@@ -1,0 +1,1384 @@
+<!--
+      :::    :::       ::::::::::           :::        :::::::::
+     :+:    :+:       :+:                :+: :+:      :+:    :+:
+    +:+    +:+       +:+               +:+   +:+     +:+    +:+
+   +#++:++#++       +#++:++#         +#++:++#++:    +#+    +:+
+  +#+    +#+       +#+              +#+     +#+    +#+    +#+
+ #+#    #+#       #+#              #+#     #+#    #+#    #+#
+###    ###       ##########       ###     ###    #########
+
+-->
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星辰小說閱讀平臺</title>
+    <style>
+
+        :root {--藍色: #00346c;--紅色: #b21f1f;--標1題藍: #00346c;--標2題紅: #b21f1f;}
+        * {margin: 0;padding: 0;box-sizing: border-box;font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; }
+        
+        body {background: linear-gradient(135deg, var(--藍色) , #000 , var(--紅色) );background-attachment: fixed;color: #333;min-height: 100vh;padding: 20px; }
+        
+        .container {max-width: 1200px;margin: 0 auto;background: rgba(255, 255, 255, 0.95);border-radius: 15px;box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);overflow: hidden; }
+        
+        header {background: linear-gradient(to right, var(--藍色), var(--紅色));color: white;padding: 20px;text-align: center;position: relative; }
+        
+        .auth-container {position: absolute;top: 20px;right: 20px; }
+        
+        .auth-button {background: rgba(255, 255, 255, 0.2);border: 1px solid rgba(255, 255, 255, 0.4);color: white;padding: 8px 15px;border-radius: 20px;cursor: pointer;transition: all 0.3s;font-weight: bold; }
+        
+        .auth-button:hover {background: rgba(255, 255, 255, 0.3); }
+        
+        .user-info {display: flex;align-items: center;gap: 10px; }
+        
+        .user-avatar {width: 35px;height: 35px;border-radius: 50%;background: var(--紅色);;display: flex;align-items: center;justify-content: center;font-weight: bold; }
+        
+        h1 {font-size: 2.5rem;margin-bottom: 10px;text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }
+        
+        .search-container {padding: 20px;background: #f8f9fa;border-bottom: 1px solid #e0e0e0; }
+        
+        #search-box {width: 100%;padding: 12px 20px;border: 2px solid #ddd;border-radius: 30px;font-size: 1rem;transition: all 0.3s; }
+        
+        #search-box:focus {border-color: var(--藍色);box-shadow: 0 0 10px rgba(58, 97, 134, 0.3);outline: none; }
+        
+        .novel-list {padding: 20px; }
+        
+        .novel-item {background: white;border-radius: 10px;padding: 20px;margin-bottom: 15px;box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);transition: transform 0.3s, box-shadow 0.3s;border-left: 5px solid var(--藍色);display: flex;flex-direction: column; }
+        
+        .novel-item:hover {transform: translateY(-3px);box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+        
+        .novel-item.paid {border-left: 5px solid var(--紅色); }
+        
+        .novel-item h3 {color: #2c3e50;margin-bottom: 10px;cursor: pointer;font-size: 1.4rem;display: flex;align-items: center; }
+        
+        .novel-item.paid h3 {color: var(--紅色); }
+        .novel-item.paid h3::after {content: "💊";font-size: 0.7rem;padding: 3px 8px;border-radius: 15px;margin-left: 10px; }
+        
+
+        
+        .meta-info {display: flex;justify-content: space-between;color: #7f8c8d;font-size: 0.9rem;margin-top: 10px; }
+        
+        .modal {display: none;position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(0, 0, 0, 0.7);z-index: 1000;justify-content: center;align-items: center; }
+        
+        .modal-content {background: white;border-radius: 15px;width: 90%;max-width: 600px;max-height: 80vh;overflow-y: auto;padding: 30px;position: relative;box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3); }
+        
+        .close-modal {position: absolute;top: 15px;right: 15px;font-size: 1.5rem;cursor: pointer;color: #7f8c8d;transition: color 0.3s; }
+        
+        .close-modal:hover {color: var(--紅色); }
+        
+        #modal-title {color: #7a7a7a;margin-bottom: 10px;padding-right: 30px; }
+        
+        #modal-author {color: #7f8c8d;margin-bottom: 20px;font-style: italic; }
+        
+        #modal-body {line-height: 1.8;color: #7a7a7a; }
+        
+        .payment-content {text-align: center;padding: 20px; }
+        
+        .payment-content h2 {color: var(--紅色);margin-bottom: 20px; }
+        
+        .payment-content p {margin-bottom: 25px;line-height: 1.6; }
+        
+        .payment-button {background: linear-gradient(to right, var(--藍色), var(--紅色));color: white;border: none;padding: 12px 30px;border-radius: 30px;font-size: 1rem;cursor: pointer;transition: transform 0.3s, box-shadow 0.3s; }
+        
+        .payment-button:hover {transform: translateY(-3px);box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+        
+        footer {text-align: center;padding: 20px;color: white;margin-top: 30px;font-size: 0.9rem; }
+        
+        .auth-modal {display: none;position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(0, 0, 0, 0.7);z-index: 1000;justify-content: center;align-items: center; }
+        
+        .auth-modal-content {background: white;border-radius: 15px;width: 90%;max-width: 400px;padding: 30px;position: relative;box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);text-align: center; }
+        
+        .auth-form {display: flex;flex-direction: column;gap: 15px;margin-top: 20px; }
+        
+        .auth-form input {padding: 12px 15px;border: 1px solid #ddd;border-radius: 5px;font-size: 1rem; }
+        
+        .auth-form button {background: linear-gradient(to right, var(--藍色), var(--紅色));color: white;border: none;padding: 12px;border-radius: 5px;font-size: 1rem;cursor: pointer;margin-top: 10px; }
+        
+        .auth-providers {margin-top: 20px;display: flex;flex-direction: column;gap: 10px; }
+        
+        .auth-provider-btn {display: flex;align-items: center;justify-content: center;gap: 10px;padding: 10px;border: 1px solid #ddd;border-radius: 5px;background: white;color: var(--藍色);cursor: pointer;transition: background 0.3s; }
+        
+        .auth-provider-btn:hover {background: var(--紅色);color: white; }
+        
+        .auth-toggle {margin-top: 20px;color: var(--藍色);cursor: pointer;text-decoration: underline; }
+
+.adminBox{display: none; background: #f8f9fa; padding: 15px; border-bottom: 1px solid #e0e0e0;margin-top: 20px; }
+
+.admin-item {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.admin-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.admin-actions button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background: #3498db;
+    color: white;
+}
+
+.delete-btn {
+    background: #e74c3c;
+    color: white;
+}
+
+.toggle-vip-btn {
+    background: #f39c12;
+    color: white;
+}
+
+.is_vip {
+    background: var(--藍色);
+    color: white;
+}
+.no_vip {
+    background: var(--紅色);
+    color: white;
+}
+
+
+
+.toggle-admin-btn {
+    background: #9b59b6;
+    color: white;
+}
+
+
+.add-novel-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: var(--藍色);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.settings-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.settings-form .form-group label {
+    font-weight: bold;
+    color: var(--藍色);
+}
+
+.settings-form .form-group input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+        @media (max-width: 768px) {.meta-info {flex-direction: column;}
+            .meta-info span {margin-bottom: 5px;}
+            h1 {font-size: 2rem;}
+            .auth-container {position: static;margin-top: 15px;} }
+
+
+
+
+
+
+
+
+
+
+
+
+    </style>
+    <!-- Firebase App (core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js">//Firestore庫的引用</script>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+      :::::::::       ::::::::       :::::::::    :::   :::
+     :+:    :+:     :+:    :+:      :+:    :+:   :+:   :+:
+    +:+    +:+     +:+    +:+      +:+    +:+    +:+ +:+
+   +#++:++#+      +#+    +:+      +#+    +:+     +#++:
+  +#+    +#+     +#+    +#+      +#+    +#+      +#+
+ #+#    #+#     #+#    #+#      #+#    #+#      #+#
+#########       ########       #########       ###
+-->
+<body>
+    <div class="container">
+        <header>
+            <h1>星辰小說閱讀平臺</h1>
+            <p>探索無限想象的世界</p>
+            <div class="auth-container">
+                <button id="auth-button" class="auth-button">登入</button>
+                <div id="user-info" class="user-info" style="display: none;">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <span id="user-name">用戶</span>
+                    <button id="sign-out-button" class="auth-button">退出</button>
+                </div>
+            </div>
+
+<!-- 修改管理员面板部分，在现有按钮后添加新增文章按钮 -->
+<div id="admin-panel" class="adminBox">
+    <h3 style="margin-bottom: 15px;">管理員面板</h3>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button id="add-novel-btn" class="auth-button">新增文章</button>
+        <button id="manage-novels-btn" class="auth-button">管理文章</button>
+        <button id="manage-users-btn" class="auth-button">管理用戶</button>
+        <button id="site-settings-btn" class="auth-button">網站設定</button>
+    </div>
+</div>
+        </header>
+        
+        <div class="search-container">
+            <input type="text" id="search-box" placeholder="搜索小說標題或作者...">
+        </div>
+        
+        <div class="novel-list">
+            <div id="novel-list-container">
+                <!-- 小說列表將由JavaScript生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 內容彈窗 -->
+    <div id="content-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-content-modal">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-author"></p>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+    
+    <!-- 付費提示彈窗 -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-payment-modal">&times;</span>
+            <div class="payment-content">
+                <h2>訂閱以閱讀完整內容</h2>
+                <p>此章節為付費內容，請訂閱後繼續閱讀。訂閱後您可以享受無廣告的完整閱讀體驗，並支持作者持續創作。</p>
+                <p id="vip-status-message" style="display: none;">
+                您已經是VIP用戶，如果無法查看內容，請嘗試刷新頁面或重新登錄。
+            </p>
+            <button class="payment-button">升級VIP</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 登錄/註冊彈窗 -->
+    <div id="auth-modal" class="auth-modal">
+        <div class="auth-modal-content">
+            <span class="close-modal" id="close-auth-modal">&times;</span>
+            <div class="auth-providers">
+                <button class="auth-provider-btn google" id="google-signin">
+                    <span>使用 Google 登錄</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+<!-- 管理員文章管理模態窗口 -->
+<div id="admin-novels-modal" class="modal">
+    
+    <div class="modal-content" style="max-width: 800px;">
+        <span class="close-modal" id="close-admin-novels-modal">&times;</span>
+        <h2>文章管理</h2>
+        <div id="admin-novels-list">
+            <!-- 文章列表將在這裡動態生成 -->
+        </div>
+    </div>
+</div>
+
+<!-- 网站设置模态窗口 -->
+<div id="site-settings-modal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <span class="close-modal" id="close-site-settings-modal">&times;</span>
+        <h2>網站設定</h2>
+        <div class="settings-form">
+            <div class="form-group">
+                <label for="site-title">網站標題:</label>
+                <input type="text" id="site-title" placeholder="輸入網站標題">
+            </div>
+            <div class="form-group">
+                <label for="site-subtitle">網站副標題:</label>
+                <input type="text" id="site-subtitle" placeholder="輸入網站副標題">
+            </div>
+            <div class="form-group">
+                <label for="user-display-name">您的顯示名稱:</label>
+                <input type="text" id="user-display-name" placeholder="輸入顯示名稱">
+                <small style="color: #666; font-size: 0.8rem;">此名稱將在您的文章中顯示為作者</small>
+            </div>
+            <button id="save-settings-btn" class="payment-button">保存設定</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- 新增文章模态窗口 -->
+<div id="add-novel-modal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <span class="close-modal" id="close-add-novel-modal">&times;</span>
+        <h2>新增文章</h2>
+        <div class="add-novel-form">
+            <div class="form-group">
+                <label for="novel-title">標題:</label>
+                <input type="text" id="novel-title" placeholder="輸入文章標題">
+            </div>
+            <!-- 修改作者输入框，添加readonly属性 -->
+<div class="form-group">
+    <label for="novel-author">作者:</label>
+    <input type="text" id="novel-author" placeholder="輸入作者名稱" readonly>
+    <small style="color: #666; font-size: 0.8rem;">此字段已自动填充为您的用户名</small>
+</div>
+            <div class="form-group">
+                <label for="novel-publish-date">發布日期:</label>
+                <input type="date" id="novel-publish-date">
+            </div>
+            <div class="form-group">
+                <label for="novel-type">類型:</label>
+                <select id="novel-type">
+                    <option value="free">免費</option>
+                    <option value="paid">付費</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="novel-content">內容:</label>
+                <textarea id="novel-content" rows="10" placeholder="輸入文章內容"></textarea>
+            </div>
+            <button id="submit-novel-btn" class="payment-button">提交</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- 管理員用戶管理模態窗口 -->
+<div id="admin-users-modal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+        <span class="close-modal" id="close-admin-users-modal">&times;</span>
+        <h2>用戶管理</h2>
+        <div id="admin-users-list">
+            <!-- 用戶列表將在這裡動態生成 -->
+        </div>
+    </div>
+</div>
+
+    <footer>
+        <p>© 2024 星辰小說閱讀平臺 - 所有權利保留</p>
+    </footer>
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script type="module">
+        // 範例小說數據
+        const novels = [
+            {id: 1,
+                title: "第一章：星辰的呼喚",
+                author: "幻夢",
+                publishDate: "2024-05-20",
+                type: "free",
+                content: "在遙遠的星系邊緣，一顆被遺忘的星球上，古老的預言悄然甦醒。少年艾倫並不知道，他平凡的生活即將因為一塊神秘的發光石頭而徹底改變。那石頭不僅蘊含著宇宙的秘密，更指引著他走向一條充滿挑戰與奇遇的道路..."
+            },
+            {id: 2,
+                title: "第二章：迷霧森林的試煉",
+                author: "幻夢",
+                publishDate: "2024-05-27",
+                type: "free",
+                content: "為了尋找石頭的真相，艾倫踏入了傳說中的迷霧森林。這裡的每一棵樹木都擁有自己的意識，每一陣風都可能帶來致命的幻覺。他必須學會傾聽自然，分辨真實與虛假，才能找到森林深處的守護者。"
+            },
+            {id: 3,
+                title: "第三章：天空之城的秘密",
+                author: "幻夢",
+                publishDate: "2024-06-03",
+                type: "paid",
+                content: "此為付費內容。"
+            },
+            {id: 4,
+                title: "序章：紅月之夜",
+                author: "夜行者",
+                publishDate: "2024-04-15",
+                type: "free",
+                content: "當血紅色的月亮高掛夜空，古老的契約再次生效。城市陰影中的吸血鬼與狼人之間的休戰協議即將到期，一場無可避免的暗夜之戰，正隨著一名無意間闖入他們世界的普通偵探而拉開序幕。"
+            },
+            {id: 5,
+                title: "第四章：時間的裂縫",
+                author: "幻夢",
+                publishDate: "2024-06-10",
+                type: "paid",
+                content: "此為付費內容。"
+            },
+            {id: 6,
+                title: "第一章：代碼的低語",
+                author: "奇點",
+                publishDate: "2024-06-08",
+                type: "free",
+                content: "2077年，新京市。一個叛逆的駭客在入侵巨型企業『核心』的數據庫時，意外發現了一段無法解釋的代碼。這段代碼彷彿擁有生命，它開始與駭客對話，揭露了一個足以顛覆整個世界的驚天陰謀。"
+            }
+        ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+      :::::::::           :::        ::::::::       ::::::::::
+     :+:    :+:        :+: :+:     :+:    :+:      :+:
+    +:+    +:+       +:+   +:+    +:+             +:+
+   +#++:++#+       +#++:++#++:   +#++:++#++      +#++:++#
+  +#+    +#+      +#+     +#+          +#+      +#+
+ #+#    #+#      #+#     #+#   #+#    #+#      #+#
+#########       ###     ###    ########       ##########
+*/
+
+        // Firebase配置 - 請替換為您的實際配置
+        const firebaseConfig = {apiKey: "AIzaSyDXPqC7dJ5AeCbWnWNaq95TS_5kW8FlQLU",
+            authDomain: "txtbook0907.firebaseapp.com",
+            projectId: "txtbook0907",
+            storageBucket: "txtbook0907.firebasestorage.app",
+            messagingSenderId: "210063365022",
+            appId: "1:210063365022:web:a22c4fa22bf112af86fc8f",
+            measurementId: "G-N4DVV37B5M"
+        };
+        
+        // 初始化Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        // 添加數據庫引用
+        const db = firebase.firestore();
+        
+        // DOM元素
+        const listContainer = document.getElementById('novel-list-container');
+        const searchBox = document.getElementById('search-box');
+        const contentModal = document.getElementById('content-modal');
+        const paymentModal = document.getElementById('payment-modal');
+        const authModal = document.getElementById('auth-modal');
+        const closeContentBtn = document.getElementById('close-content-modal');
+        const closePaymentBtn = document.getElementById('close-payment-modal');
+        const closeAuthBtn = document.getElementById('close-auth-modal');
+        const authButton = document.getElementById('auth-button');
+        const signOutButton = document.getElementById('sign-out-button');
+        const userInfo = document.getElementById('user-info');
+        const userName = document.getElementById('user-name');
+        const userAvatar = document.getElementById('user-avatar');
+        const authToggle = document.getElementById('auth-toggle');
+        const authModalTitle = document.getElementById('auth-modal-title');
+        const googleSignIn = document.getElementById('google-signin');
+        
+        let isLoginMode = true;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+      ::::::::       ::::::::::       ::::::::::
+    :+:    :+:      :+:              :+:
+   +:+             +:+              +:+
+  +#++:++#++      +#++:++#         +#++:++#
+        +#+      +#+              +#+
+#+#    #+#      #+#              #+#
+########       ##########       ##########
+
+*/
+
+// 渲染小說列表 - 從Firestore獲取數據
+async function renderNovelsFromFirestore() {
+    try {
+        // 從Firestore獲取小說數據，按發布日期排序（最舊的在前）
+        const novelsSnapshot = await db.collection("novels").orderBy("publishDate", "asc").get();
+        
+        listContainer.innerHTML = ''; // 清空現有列表
+
+        if (novelsSnapshot.empty) {
+            listContainer.innerHTML = '<p class="no-results">暫無文章。</p>';
+            return;
+        }
+
+        // 將Firestore文檔轉換為數組
+        const novelsArray = [];
+        novelsSnapshot.forEach(doc => {
+            novelsArray.push(doc.data());
+        });
+
+        // 渲染小說列表
+        novelsArray.forEach(novel => {
+            const novelItem = document.createElement('div');
+            novelItem.className = `novel-item ${novel.type}`;
+            novelItem.innerHTML = `
+                <h3 data-id="${novel.id}">${novel.title}</h3>
+                <div class="meta-info">
+                    <span class="author">${novel.author}</span>
+                    <span class="date">${novel.publishDate}</span>
+                </div>
+            `;
+            listContainer.appendChild(novelItem);
+        });
+    } catch (error) {
+        console.error("獲取小說數據失敗: ", error);
+        listContainer.innerHTML = '<p class="no-results">加載失敗，請刷新頁面重試。</p>';
+    }
+}
+
+        // 顯示免費內容彈窗
+        function showContentModal(novel) {document.getElementById('modal-title').textContent = novel.title;document.getElementById('modal-author').textContent = `作者：${novel.author}`;document.getElementById('modal-body').textContent = novel.content;contentModal.style.display = 'flex'; }
+
+        // 顯示付費提示彈窗
+function showPaymentModal() {
+    const user = auth.currentUser;
+    const vipMessage = document.getElementById('vip-status-message');
+    
+    if (user) {
+        checkUserVipStatus(user.uid)
+            .then(isVip => {
+                vipMessage.style.display = isVip ? 'block' : 'none';
+                paymentModal.style.display = 'flex';
+            })
+            .catch(error => {
+                console.error("檢查VIP狀態時出錯: ", error);
+                vipMessage.style.display = 'none';
+                paymentModal.style.display = 'flex';
+            });
+    } else {
+        vipMessage.style.display = 'none';
+        paymentModal.style.display = 'flex';
+    }
+}
+
+        // 顯示登入彈窗
+        function showAuthModal() {authModal.style.display = 'flex'; }
+
+        // 關閉所有彈窗
+        function closeModals() {contentModal.style.display = 'none';paymentModal.style.display = 'none';authModal.style.display = 'none'; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+      :::::::::           :::    :::::::::::           :::
+     :+:    :+:        :+: :+:      :+:             :+: :+:
+    +:+    +:+       +:+   +:+     +:+            +:+   +:+
+   +#+    +:+      +#++:++#++:    +#+           +#++:++#++:
+  +#+    +#+      +#+     +#+    +#+           +#+     +#+
+ #+#    #+#      #+#     #+#    #+#           #+#     #+#
+#########       ###     ###    ###           ###     ###
+*/
+
+        // 使用Google登入
+        function signInWithGoogle() {const provider = new firebase.auth.GoogleAuthProvider();auth.signInWithPopup(provider)
+                .then(() => {    closeModals();})
+                .catch(error => {    alert("Google登錄失敗: " + error.message);}); }
+
+
+// 保存用戶信息到Firestore - 添加首次登錄日期檢查
+function writeUserData(userId, email, name, photoUrl) {
+    // 先檢查用戶是否已存在
+    db.collection("users").doc(userId).get()
+        .then(doc => {
+            if (doc.exists) {
+                // 用戶已存在，只更新基本信息
+                const updateData = {
+                    email: email,
+                    displayName: name || "",
+                    photoUrl: photoUrl || "",
+                    lastLogin: new Date().toISOString()
+                };
+                
+                // 使用merge選項保留現有字段
+                return db.collection("users").doc(userId).set(updateData, { merge: true });
+            } else {
+                // 新用戶，添加首次登錄日期
+                const newUserData = {
+                    email: email,
+                    displayName: name || "",
+                    photoUrl: photoUrl || "",
+                    firstLogin: new Date().toISOString(), // 新增首次登錄日期
+                    lastLogin: new Date().toISOString(),
+                    vip:false // 默認非VIP用戶
+                };
+                
+                return db.collection("users").doc(userId).set(newUserData);
+            }
+        })
+        .then(() => {
+            console.log("用戶數據更新成功");
+        })
+        .catch((error) => {
+            console.error("用戶數據更新失敗: ", error);
+        });
+}
+// 檢查用戶VIP狀態
+function checkUserVipStatus(userId) {
+    return db.collection("users").doc(userId).get()
+        .then(doc => {
+            if (doc.exists) {
+                return doc.data().vip === true;
+            }
+            return false;
+        })
+        .catch(error => {
+            console.error("獲取用戶VIP狀態失敗: ", error);
+            return false;
+        });
+}
+
+
+// 檢查用戶管理員狀態 - 添加更嚴格的檢查
+async function checkUserAdminStatus(userId) {
+    try {
+        const userDoc = await db.collection("users").doc(userId).get();
+        if (userDoc.exists) {
+            return userDoc.data().admin === true;
+        }
+        return false;
+    } catch (error) {
+        console.error("獲取用戶管理員狀態失敗: ", error);
+        return false;
+    }
+}
+
+
+
+
+
+
+
+// 打开新增文章模态窗口
+document.getElementById('add-novel-btn').addEventListener('click', async () => {
+    // 设置默认日期为今天
+    document.getElementById('novel-publish-date').valueAsDate = new Date();
+    
+    // 获取当前用户信息并设置作者字段
+    const user = auth.currentUser;
+    if (user) {
+        try {
+            // 优先使用用户设置的displayName
+            const userDoc = await db.collection("users").doc(user.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                document.getElementById('novel-author').value = userData.displayName || user.email;
+            } else {
+                document.getElementById('novel-author').value = user.displayName || user.email;
+            }
+        } catch (error) {
+            console.error("獲取用戶信息失敗: ", error);
+            document.getElementById('novel-author').value = user.displayName || user.email;
+        }
+    } else {
+        // 如果用户未登录，清空作者字段
+        document.getElementById('novel-author').value = '';
+    }
+    
+    document.getElementById('add-novel-modal').style.display = 'flex';
+});
+
+// 关闭新增文章模态窗口
+document.getElementById('close-add-novel-modal').addEventListener('click', () => {
+    document.getElementById('add-novel-modal').style.display = 'none';
+});
+
+// 提交新文章
+document.getElementById('submit-novel-btn').addEventListener('click', async () => {
+    const title = document.getElementById('novel-title').value;
+    const author = document.getElementById('novel-author').value;
+    const publishDate = document.getElementById('novel-publish-date').value;
+    const type = document.getElementById('novel-type').value;
+    const content = document.getElementById('novel-content').value;
+    
+    if (!title || !author || !publishDate || !content) {
+        alert('請填寫所有必填字段');
+        return;
+    }
+    
+    try {
+        // 生成新ID（使用Firestore自动生成的ID）
+        const novelRef = db.collection("novels").doc();
+        
+        // 创建新文章对象
+        const newNovel = {
+            id: novelRef.id, // 使用Firestore自动生成的ID
+            title,
+            author,
+            publishDate,
+            type,
+            content,
+            createdAt: new Date().toISOString()
+        };
+        
+        // 保存到Firestore
+        await novelRef.set(newNovel);
+        
+        alert('文章新增成功！');
+        
+        // 关闭模态窗口
+        document.getElementById('add-novel-modal').style.display = 'none';
+        
+        // 清空表单
+        document.getElementById('novel-title').value = '';
+        document.getElementById('novel-author').value = '';
+        document.getElementById('novel-publish-date').valueAsDate = new Date();
+        document.getElementById('novel-type').value = 'free';
+        document.getElementById('novel-content').value = '';
+        
+        // 刷新文章列表
+        await renderNovelsFromFirestore();
+        
+    } catch (error) {
+        console.error("新增文章失敗: ", error);
+        alert("新增文章失敗，請重試");
+    }
+});
+
+// 加載文章管理列表 - 添加錯誤處理
+async function loadNovelsForAdmin() {
+    try {
+        const novelsSnapshot = await db.collection("novels").orderBy("createdAt", "desc").get();
+        const novelsList = document.getElementById('admin-novels-list');
+        novelsList.innerHTML = '';
+        
+        if (novelsSnapshot.empty) {
+            novelsList.innerHTML = '<p>暫無文章數據</p>';
+            return;
+        }
+        
+        novelsSnapshot.forEach(doc => {
+            const novel = doc.data();
+            const novelItem = document.createElement('div');
+            novelItem.className = 'admin-item';
+            novelItem.innerHTML = `
+                <h4>${novel.title || '無標題'}</h4>
+                <p>作者: ${novel.author || '未知'}</p>
+                <p>類型: ${novel.type || '未知'}</p>
+                <p>發布日期: ${novel.publishDate || '未知'}</p>
+                <div class="admin-actions">
+                    <button class="edit-btn" data-id="${doc.id}">編輯</button>
+                    <button class="delete-btn" data-id="${doc.id}">刪除</button>
+                </div>
+            `;
+            novelsList.appendChild(novelItem);
+        });
+    } catch (error) {
+        console.error("加載文章列表失敗: ", error);
+        const novelsList = document.getElementById('admin-novels-list');
+        novelsList.innerHTML = `
+            <p>加載失敗: ${error.message}</p>
+            <p>請檢查您是否有管理員權限，或刷新頁面重試。</p>
+        `;
+    }
+}
+
+
+
+
+// 加載用戶管理列表 - 添加錯誤處理
+async function loadUsersForAdmin() {
+    try {
+        const usersSnapshot = await db.collection("users").get();
+        const usersList = document.getElementById('admin-users-list');
+        usersList.innerHTML = '';
+        
+        if (usersSnapshot.empty) {
+            usersList.innerHTML = '<p>暫無用戶數據</p>';
+            return;
+        }
+        
+        usersSnapshot.forEach(doc => {
+            const user = doc.data();
+            const userItem = document.createElement('div');
+            userItem.className = 'admin-item';
+            
+            // 格式化日期函數
+            const formatDate = (dateString) => {
+                if (!dateString) return '未知';
+                const date = new Date(dateString);
+                return date.toLocaleString('zh-TW', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+            };
+            
+            userItem.innerHTML = `
+            <hr>
+                <h4>${user.displayName || user.email || '未知用戶'}</h4>
+                <p>郵箱: ${user.email || '未知'}</p>
+                <p>首次登錄: ${user.firstLogin ? formatDate(user.firstLogin) : '未知'}</p>
+                <p>最後登錄: ${user.lastLogin ? formatDate(user.lastLogin) : '未知'}</p>
+                <p>VIP: ${user.vip ? '是' : '否'} | 管理員: ${user.admin ? '是' : '否'}</p>
+                <div class="admin-actions">
+                    <button class="${user.vip ? 'is_vip' : 'no_vip'}" data-id="${doc.id}" data-vip="${user.vip || false}">
+                        ${user.vip ? '⬇️取消VIP' : '⬆️設為VIP'}
+                    </button>
+                </div>
+                
+            `;
+            usersList.appendChild(userItem);
+        });
+    } catch (error) {
+        console.error("加載用戶列表失敗: ", error);
+        const usersList = document.getElementById('admin-users-list');
+        usersList.innerHTML = `
+            <p>加載失敗: ${error.message}</p>
+            <p>請檢查您是否有管理員權限，或刷新頁面重試。</p>
+        `;
+    }
+}
+
+
+
+// 打开网站设置模态窗口
+document.getElementById('site-settings-btn').addEventListener('click', async () => {
+    // 获取当前网站设置
+    try {
+        const settingsDoc = await db.collection("settings").doc("site").get();
+        if (settingsDoc.exists) {
+            const settings = settingsDoc.data();
+            document.getElementById('site-title').value = settings.title || "星辰小說閱讀平臺";
+            document.getElementById('site-subtitle').value = settings.subtitle || "探索無限想象的世界";
+        } else {
+            // 使用默认值
+            document.getElementById('site-title').value = "星辰小說閱讀平臺";
+            document.getElementById('site-subtitle').value = "探索無限想象的世界";
+        }
+    } catch (error) {
+        console.error("獲取網站設定失敗: ", error);
+        // 使用默认值
+        document.getElementById('site-title').value = "星辰小說閱讀平臺";
+        document.getElementById('site-subtitle').value = "探索無限想象的世界";
+    }
+    
+    // 获取当前用户显示名称
+    const user = auth.currentUser;
+    if (user) {
+        try {
+            const userDoc = await db.collection("users").doc(user.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                document.getElementById('user-display-name').value = userData.displayName || user.email || "";
+            } else {
+                document.getElementById('user-display-name').value = user.displayName || user.email || "";
+            }
+        } catch (error) {
+            console.error("獲取用戶信息失敗: ", error);
+            document.getElementById('user-display-name').value = user.displayName || user.email || "";
+        }
+    }
+    
+    document.getElementById('site-settings-modal').style.display = 'flex';
+});
+
+// 关闭网站设置模态窗口
+document.getElementById('close-site-settings-modal').addEventListener('click', () => {
+    document.getElementById('site-settings-modal').style.display = 'none';
+});
+
+// 保存网站设置
+document.getElementById('save-settings-btn').addEventListener('click', async () => {
+    const siteTitle = document.getElementById('site-title').value;
+    const siteSubtitle = document.getElementById('site-subtitle').value;
+    const userDisplayName = document.getElementById('user-display-name').value;
+    
+    if (!siteTitle) {
+        alert('請填寫網站標題');
+        return;
+    }
+    
+    try {
+        const user = auth.currentUser;
+        
+        // 保存网站设置
+        await db.collection("settings").doc("site").set({
+            title: siteTitle,
+            subtitle: siteSubtitle,
+            updatedAt: new Date().toISOString()
+        }, { merge: true });
+        
+        // 保存用户显示名称
+        if (user && userDisplayName) {
+            await db.collection("users").doc(user.uid).set({
+                displayName: userDisplayName
+            }, { merge: true });
+            
+            // 更新当前页面显示的用户名
+            userName.textContent = userDisplayName;
+        }
+        
+        // 更新页面标题和副标题
+        document.querySelector('header h1').textContent = siteTitle;
+        document.querySelector('header p').textContent = siteSubtitle;
+        
+        alert('設定保存成功！');
+        document.getElementById('site-settings-modal').style.display = 'none';
+        
+    } catch (error) {
+        console.error("保存設定失敗: ", error);
+        alert("保存設定失敗，請重試");
+    }
+});
+
+// 加载网站设置
+async function loadSiteSettings() {
+    try {
+        const settingsDoc = await db.collection("settings").doc("site").get();
+        if (settingsDoc.exists) {
+            const settings = settingsDoc.data();
+            if (settings.title) {
+                document.querySelector('header h1').textContent = settings.title;
+            }
+            if (settings.subtitle) {
+                document.querySelector('header p').textContent = settings.subtitle;
+            }
+        }
+    } catch (error) {
+        console.error("加載網站設定失敗: ", error);
+    }
+}
+
+// 在页面加载时加载网站设置
+document.addEventListener('DOMContentLoaded', () => {
+    renderNovelsFromFirestore();
+    loadSiteSettings(); // 加载网站设置
+});
+
+
+/*
+      ::::::::::      :::    :::       ::::    :::
+     :+:             :+:    :+:       :+:+:   :+:
+    +:+             +:+    +:+       :+:+:+  +:+
+   :#::+::#        +#+    +:+       +#+ +:+ +#+
+  +#+             +#+    +#+       +#+  +#+#+#
+ #+#             #+#    #+#       #+#   #+#+#
+###              ########        ###    ####
+*/
+
+
+// 修改认证状态变化监听器中的管理员检查部分
+auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        // 用戶已登入
+        authButton.style.display = 'none';
+        userInfo.style.display = 'flex';
+        
+        // 获取用户显示名称
+        try {
+            const userDoc = await db.collection("users").doc(user.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                userName.textContent = userData.displayName || user.email;
+            } else {
+                userName.textContent = user.displayName || user.email;
+            }
+        } catch (error) {
+            console.error("獲取用戶信息失敗: ", error);
+            userName.textContent = user.displayName || user.email;
+        }
+        
+        userAvatar.textContent = userName.textContent.charAt(0).toUpperCase();
+        
+        // 更新用户数据
+        writeUserData(user.uid, user.email, userName.textContent, user.photoURL);
+        
+        // 检查是否为管理员
+        try {
+            const isAdmin = await checkUserAdminStatus(user.uid);
+            if (isAdmin) {
+                document.getElementById('admin-panel').style.display = 'block';
+                
+                // 预加载管理员数据
+                setTimeout(() => {
+                    loadNovelsForAdmin();
+                    loadUsersForAdmin();
+                }, 1000);
+            } else {
+                document.getElementById('admin-panel').style.display = 'none';
+            }
+        } catch (error) {
+            console.error("检查管理员状态时出错: ", error);
+            document.getElementById('admin-panel').style.display = 'none';
+        }
+    } else {
+        // 用戶已登出
+        authButton.style.display = 'block';
+        userInfo.style.display = 'none';
+        document.getElementById('admin-panel').style.display = 'none';
+    }
+});
+
+        // 事件監聽
+document.addEventListener('DOMContentLoaded', () => {
+    renderNovelsFromFirestore(); // 使用從Firestore獲取數據的函數
+});
+
+// 修改搜索功能
+searchBox.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    
+    // 獲取所有小說項目
+    const novelItems = document.querySelectorAll('.novel-item');
+    
+    // 如果沒有搜索詞，顯示所有項目
+    if (!searchTerm) {
+        novelItems.forEach(item => {
+            item.style.display = 'flex';
+        });
+        return;
+    }
+    
+    // 過濾項目
+    novelItems.forEach(item => {
+        const title = item.querySelector('h3').textContent.toLowerCase();
+        const author = item.querySelector('.author').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || author.includes(searchTerm)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+});
+
+// 修改文章點擊事件處理函數
+listContainer.addEventListener('click', async (e) => {
+    if (e.target.tagName === 'H3') {
+        const novelTitle = e.target.textContent;
+        
+        try {
+            // 從Firestore獲取點擊的文章
+            const novelsSnapshot = await db.collection("novels")
+                .where("title", "==", novelTitle)
+                .get();
+            
+            if (novelsSnapshot.empty) {
+                console.error("未找到相關文章");
+                return;
+            }
+            
+            // 獲取第一篇文章（理論上標題應該是唯一的）
+            const novelDoc = novelsSnapshot.docs[0];
+            const novel = novelDoc.data();
+            
+            const user = auth.currentUser;
+            
+            if (novel.type === 'free') {
+                showContentModal(novel);
+            } else {
+                // 付費內容檢查用戶VIP狀態
+                if (user) {
+                    try {
+                        const isVip = await checkUserVipStatus(user.uid);
+                        if (isVip) {
+                            showContentModal(novel);
+                        } else {
+                            showPaymentModal();
+                        }
+                    } catch (error) {
+                        console.error("檢查VIP狀態時出錯: ", error);
+                        showPaymentModal();
+                    }
+                } else {
+                    showPaymentModal();
+                }
+            }
+        } catch (error) {
+            console.error("獲取文章數據失敗: ", error);
+        }
+    }
+});
+
+        // 按鈕事件
+        authButton.addEventListener('click', showAuthModal);
+        signOutButton.addEventListener('click', () => auth.signOut());
+        googleSignIn.addEventListener('click', signInWithGoogle);
+
+        // 關閉按鈕事件
+        closeContentBtn.onclick = closeModals;
+        closePaymentBtn.onclick = closeModals;
+        closeAuthBtn.onclick = closeModals;
+
+        // 點擊彈窗外部區域關閉
+        window.onclick = function(event) {if (event.target == contentModal || event.target == paymentModal || event.target == authModal) {closeModals();} }
+
+
+
+// 管理員按鈕事件監聽
+document.getElementById('manage-novels-btn').addEventListener('click', async () => {
+    await loadNovelsForAdmin();
+    document.getElementById('admin-novels-modal').style.display = 'flex';
+});
+
+document.getElementById('manage-users-btn').addEventListener('click', async () => {
+    await loadUsersForAdmin();
+    document.getElementById('admin-users-modal').style.display = 'flex';
+});
+
+// 關閉管理員模態窗口
+document.getElementById('close-admin-novels-modal').addEventListener('click', () => {
+    document.getElementById('admin-novels-modal').style.display = 'none';
+});
+
+document.getElementById('close-admin-users-modal').addEventListener('click', () => {
+    document.getElementById('admin-users-modal').style.display = 'none';
+});
+
+// 用戶管理操作事件委託
+document.getElementById('admin-users-list').addEventListener('click', async (e) => {
+    if (e.target.classList.contains('toggle-vip-btn')) {
+        const userId = e.target.dataset.id;
+        const isVip = e.target.dataset.vip === 'true';
+        
+        try {
+            await db.collection("users").doc(userId).update({
+                vip: !isVip
+            });
+            alert(`已${!isVip ? '授予' : '取消'}VIP權限`);
+            await loadUsersForAdmin(); // 刷新列表
+        } catch (error) {
+            console.error("更新VIP狀態失敗: ", error);
+            alert("操作失敗");
+        }
+    }
+    
+    if (e.target.classList.contains('toggle-admin-btn')) {
+        const userId = e.target.dataset.id;
+        const isAdmin = e.target.dataset.admin === 'true';
+        
+        try {
+            await db.collection("users").doc(userId).update({
+                admin: !isAdmin
+            });
+            alert(`已${!isAdmin ? '授予' : '取消'}管理員權限`);
+            await loadUsersForAdmin(); // 刷新列表
+        } catch (error) {
+            console.error("更新管理員狀態失敗: ", error);
+            alert("操作失敗");
+        }
+    }
+});
+
+
+// 文章管理操作事件委托
+document.getElementById('admin-novels-list').addEventListener('click', async (e) => {
+    if (e.target.classList.contains('delete-btn')) {
+        const novelId = e.target.dataset.id;
+        
+        if (confirm('確定要刪除這篇文章嗎？此操作無法撤銷。')) {
+            try {
+                await db.collection("novels").doc(novelId).delete();
+                alert('文章刪除成功');
+                await loadNovelsForAdmin(); // 刷新列表
+            } catch (error) {
+                console.error("刪除文章失敗: ", error);
+                alert("刪除文章失敗");
+            }
+        }
+    }
+    
+    // 可以在这里添加编辑功能的处理
+    if (e.target.classList.contains('edit-btn')) {
+        // 编辑功能的实现
+        alert('編輯功能尚未實現');
+    }
+});
+
+
+
+
+</script>
+</html>
